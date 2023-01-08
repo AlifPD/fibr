@@ -18,7 +18,7 @@ app.get('/api-test', (req, res) => {
     return res.status(200).send("Fibr API Test");
 });
 
-// Post data to Database (Products)
+// Create/Add product
 app.post('/api/create', (req,res) => {
     (async() => {
         try{
@@ -38,7 +38,7 @@ app.post('/api/create', (req,res) => {
     })();
 });
 
-// Get Database (Products)
+// Read/Retreive specific product
 app.get('/api/read', (req, res) => {
     (async() => {
         try{
@@ -54,7 +54,7 @@ app.get('/api/read', (req, res) => {
     })();
 });
 
-//Get Database (All Products)
+// Read/Retreive all product from 1 merchant
 app.get('/api/read-all', (req, res) => {
     (async() => {
         try{
@@ -77,6 +77,44 @@ app.get('/api/read-all', (req, res) => {
                 return response;
             })
             return res.status(200).send(response);
+        }catch(error){
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// Update a product
+app.put('/api/update', (req,res) => {
+    (async() => {
+        try{
+            const document = db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/');
+
+            await document.update({
+                name: req.body.name,
+                price: req.body.price,
+                unit: req.body.unit,
+                thumbnail: req.body.thumbnail,
+                description: req.body.description
+            });
+            
+            return res.status(200).send();
+        }catch(error){
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+// Delete a product
+app.delete('/api/delete', (req,res) => {
+    (async() => {
+        try{
+            const document = db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/');
+
+            await document.delete();
+            
+            return res.status(200).send();
         }catch(error){
             console.log(error);
             return res.status(500).send(error);
