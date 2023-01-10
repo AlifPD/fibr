@@ -22,11 +22,11 @@ class CartAdapter(private val listCart: List<ReadCartResponseItem?>?) : Recycler
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgvThumbnail: ImageView = itemView.findViewById(R.id.cart_thumbnail)
-        val tvName: TextView = itemView.findViewById(R.id.cart_name)
-        val tvPrice: TextView = itemView.findViewById(R.id.cart_price)
-        val tvQuantity: TextView = itemView.findViewById(R.id.cart_quantity)
-        val tvTotal: TextView = itemView.findViewById(R.id.cart_total_item)
+        val imgvThumbnail: ImageView = itemView.findViewById(R.id.cartitem_imv_thumbnail)
+        val tvName: TextView = itemView.findViewById(R.id.cartitem_tv_name)
+        val tvPrice: TextView = itemView.findViewById(R.id.cartitem_tv_price)
+        val tvQuantity: TextView = itemView.findViewById(R.id.cartitem_tv_quantity)
+        val tvTotal: TextView = itemView.findViewById(R.id.cartitem_tv_total)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -67,8 +67,8 @@ class MerchantsAdapter(private val listMerchants: List<AllMerchantResponseItem?>
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgvThumbnail: ImageView = itemView.findViewById(R.id.imageView_thumbnail_merchant)
-        val tvName: TextView = itemView.findViewById(R.id.merchant_name)
+        val imgvThumbnail: ImageView = itemView.findViewById(R.id.merchantitem_imv_thumbnail)
+        val tvName: TextView = itemView.findViewById(R.id.merchantitem_tv_name)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -103,11 +103,11 @@ class ProductAdapter(private val listProducts: List<AllProductResponseItem?>?) :
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgvThumbnail: ImageView = itemView.findViewById(R.id.item_product_thumbnail)
-        val tvName: TextView = itemView.findViewById(R.id.item_product_name)
-        val tvPrice: TextView = itemView.findViewById(R.id.item_product_price)
-        val tvQuantity: TextView = itemView.findViewById(R.id.item_product_quantity)
-        val tvDescription: TextView = itemView.findViewById(R.id.item_product_description)
+        val imgvThumbnail: ImageView = itemView.findViewById(R.id.productitem_imv_thumbnail)
+        val tvName: TextView = itemView.findViewById(R.id.productitem_tv_name)
+        val tvPrice: TextView = itemView.findViewById(R.id.productitem_tv_price)
+        val tvQuantity: TextView = itemView.findViewById(R.id.productitem_tv_quantity)
+        val tvDescription: TextView = itemView.findViewById(R.id.productitem_tv_description)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =

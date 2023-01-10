@@ -48,9 +48,9 @@ class LoginActivity : AppCompatActivity() {
             ViewModelFactory(UserPreferences.getInstance(dataStore))
         )[MainViewModel::class.java]
 
-        binding.loginButton.setOnClickListener {
-            val inputId = binding.loginIdEdittext.text.toString()
-            val inputPassword = binding.loginPasswordEdittext.text.toString()
+        binding.loginButtonTologin.setOnClickListener {
+            val inputId = binding.loginEdtextId.text.toString()
+            val inputPassword = binding.loginEdtextPassword.text.toString()
 
             viewModel.loginUser(inputId, inputPassword)
             viewModel.loginResponse.observe(this){
@@ -81,13 +81,13 @@ class LoginActivity : AppCompatActivity() {
                         "Please Try Again",
                         Toast.LENGTH_SHORT
                     ).show()
-                    binding.loginIdEdittext.text?.clear()
-                    binding.loginPasswordEdittext.text?.clear()
+                    binding.loginEdtextId.text?.clear()
+                    binding.loginEdtextPassword.text?.clear()
                 }
             }
         }
 
-        binding.switchSignupUser.setOnClickListener {
+        binding.loginTvTosignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
@@ -173,7 +173,7 @@ class SignUpActivity : AppCompatActivity() {
             val selectedImg: Uri = it.data?.data as Uri
             myFile = selectedImg
 
-            binding.signupImageview.setImageURI(selectedImg)
+            binding.signupImvThumbnail.setImageURI(selectedImg)
         }
     }
 
@@ -195,12 +195,12 @@ class SignUpActivity : AppCompatActivity() {
             )
         }
 
-        binding.signupButtonGalerry.setOnClickListener{startGallery()}
-        binding.signupButton.setOnClickListener {
-            val inputId = binding.signupIdEdittext.text.toString()
-            val inputPassword = binding.signupPasswordEdittext.text.toString()
-            val inputName = binding.signupNameEdittext.text.toString()
-            val inputAddress = binding.signupAddressEdittext.text.toString()
+        binding.signupButtonTogalerry.setOnClickListener{startGallery()}
+        binding.signupButtonTosignup.setOnClickListener {
+            val inputId = binding.signupEdtextId.text.toString()
+            val inputPassword = binding.signupEdtextPassword.text.toString()
+            val inputName = binding.signupEdtextName.text.toString()
+            val inputAddress = binding.signupEdtextAddress.text.toString()
             val storageRef = FirebaseStorage.getInstance().getReference("Users/Profile/" + inputId)
 
             myFile?.let { it1 -> storageRef.putFile(it1) }?.addOnSuccessListener {
@@ -221,18 +221,18 @@ class SignUpActivity : AppCompatActivity() {
                             getString(R.string.signup_failed),
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.signupIdEdittext.text?.clear()
-                        binding.signupNameEdittext.text?.clear()
-                        binding.signupPasswordEdittext.text?.clear()
-                        binding.signupAddressEdittext.text?.clear()
+                        binding.signupEdtextId.text?.clear()
+                        binding.signupEdtextName.text?.clear()
+                        binding.signupEdtextPassword.text?.clear()
+                        binding.signupEdtextAddress.text?.clear()
                     }
                 }
             }?.addOnFailureListener {
                 Toast.makeText(this, "Failed Upload Image and Sign Up", Toast.LENGTH_SHORT).show()
-                binding.signupIdEdittext.text?.clear()
-                binding.signupNameEdittext.text?.clear()
-                binding.signupPasswordEdittext.text?.clear()
-                binding.signupAddressEdittext.text?.clear()
+                binding.signupEdtextId.text?.clear()
+                binding.signupEdtextName.text?.clear()
+                binding.signupEdtextPassword.text?.clear()
+                binding.signupEdtextAddress.text?.clear()
             }
 
         }
@@ -300,15 +300,15 @@ class MainActivity : AppCompatActivity() {
                     viewModel.getTokenKey().observe(this){token2 ->
                         viewModel.getUser(token2)
                         viewModel.userResponse.observe(this){
-                            binding.mainName.text = it.data?.name ?: ""
-                            binding.mainAddress.text = it.data?.address ?: ""
-                            binding.mainCredit.text = it.data?.credit.toString()
+                            binding.mainTvName.text = it.data?.name ?: ""
+                            binding.mainTvAddress.text = it.data?.address ?: ""
+                            binding.mainTvCredit.text = it.data?.credit.toString()
 
                             val urlThumbnail = "https://storage.googleapis.com/fibr-3ac5b.appspot.com/Users/Profile/" + (it.data?.thumbnail?: "")
                             Log.d("TAG", urlThumbnail)
                             Glide.with(this)
                                 .load(urlThumbnail)
-                                .into(binding.mainThumbnail)
+                                .into(binding.mainImvThumbnail)
                         }
                     }
                     viewModel.getAllMerchant()
@@ -321,15 +321,15 @@ class MainActivity : AppCompatActivity() {
             viewModel.getTokenKey().observe(this){
                 viewModel.getUser(it)
                 viewModel.userResponse.observe(this){
-                    binding.mainName.text = it.data?.name ?: ""
-                    binding.mainAddress.text = it.data?.address ?: ""
-                    binding.mainCredit.text = it.data?.credit.toString()
+                    binding.mainTvName.text = it.data?.name ?: ""
+                    binding.mainTvAddress.text = it.data?.address ?: ""
+                    binding.mainTvCredit.text = it.data?.credit.toString()
 
                     val urlThumbnail = "https://storage.googleapis.com/fibr-3ac5b.appspot.com/Users/Profile/" + (it.data?.thumbnail?: "")
                     Log.d("TAG", urlThumbnail)
                     Glide.with(this)
                         .load(urlThumbnail)
-                        .into(binding.mainThumbnail)
+                        .into(binding.mainImvThumbnail)
                 }
             }
             viewModel.getAllMerchant()
@@ -338,12 +338,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.mainCartButton.setOnClickListener {
+        binding.mainButtonTocart.setOnClickListener {
             val toCartIntent = Intent(this, CartActivity::class.java)
             startActivity(toCartIntent)
         }
 
-        binding.mainLogoutButton.setOnClickListener {
+        binding.mainButtonTologout.setOnClickListener {
             viewModel.getTokenKey().observe(this){ token ->
                 viewModel.logout(token)
                 viewModel.logoutResponse.observe(this){
@@ -362,10 +362,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showMerchants(list: List<AllMerchantResponseItem?>?) {
-        binding.rvMerchants.layoutManager = GridLayoutManager(this, 2)
+        binding.mainRvMerchants.layoutManager = GridLayoutManager(this, 2)
 
         val merchantAdapter = MerchantsAdapter(list)
-        binding.rvMerchants.adapter = merchantAdapter
+        binding.mainRvMerchants.adapter = merchantAdapter
 
         merchantAdapter.setOnItemClickCallback(object : MerchantsAdapter.OnItemClickCallback {
             override fun onItemClicked(data: AllMerchantResponseItem?) {
@@ -397,8 +397,8 @@ class DetailMerchantActivity : AppCompatActivity() {
 
         viewModel.getMerchant(intentData?.id.toString())
         viewModel.merchantResponse.observe(this){
-            binding.merchantPageName.text = it.data?.name ?: ""
-            Glide.with(this).load(urlThumbnail+(it.data?.thumbnail)).into(binding.merchantImageViewThumbnail)
+            binding.merchantTvName.text = it.data?.name ?: ""
+            Glide.with(this).load(urlThumbnail+(it.data?.thumbnail)).into(binding.merchantImvThumbnail)
 
             viewModel.getAllProducts(intentData?.id.toString())
             viewModel.allProductsResponse.observe(this){ list ->
@@ -408,10 +408,10 @@ class DetailMerchantActivity : AppCompatActivity() {
     }
 
     private fun showProducts(list: List<AllProductResponseItem?>?) {
-        binding.rvProducts.layoutManager = LinearLayoutManager(this)
+        binding.merchantRvProducts.layoutManager = LinearLayoutManager(this)
 
         val productAdapter = ProductAdapter(list)
-        binding.rvProducts.adapter = productAdapter
+        binding.merchantRvProducts.adapter = productAdapter
 
         productAdapter.setOnItemClickCallback(object : ProductAdapter.OnItemClickCallback {
             override fun onItemClicked(data: AllProductResponseItem?) {
@@ -453,21 +453,21 @@ class DetailProductActivity : AppCompatActivity() {
             productThumbnail = it.data?.thumbnail.toString()
             productUnit = it.data?.unit.toString()
 
-            Glide.with(this).load(urlThumbnail+ (it.data?.thumbnail)).into(binding.productThumbnailImageView)
-            binding.productNameTextView.text = it.data?.name ?: ""
-            binding.productPriceTextView.text = it.data?.price.toString() + "/" + it.data?.unit
-            binding.productDescriptionTextView.text = dataIntent?.description ?: ""
+            Glide.with(this).load(urlThumbnail+ (it.data?.thumbnail)).into(binding.productImvThumbnail)
+            binding.productTvName.text = it.data?.name ?: ""
+            binding.productTvPrice.text = it.data?.price.toString() + "/" + it.data?.unit
+            binding.productTvDescription.text = dataIntent?.description ?: ""
         }
 
-        binding.productQuantityPicker.minValue = 1
-        binding.productQuantityPicker.maxValue = 50
+        binding.productPickerQuantity.minValue = 1
+        binding.productPickerQuantity.maxValue = 50
 
-        binding.productAddButton.setOnClickListener {
+        binding.productButtonToadd.setOnClickListener {
             viewModel.getTokenKey().observe(this){token ->
                 viewModel.readCart(token)
                 viewModel.readCartResponse.observe(this){numOfItem ->
                     viewModel.addCart(token, ((numOfItem.dataLength?.plus(1)).toString()), idMerchant?:"",
-                        idProduct.toString(), productName, productThumbnail, productPrice, productUnit, binding.productQuantityPicker.value)
+                        idProduct.toString(), productName, productThumbnail, productPrice, productUnit, binding.productPickerQuantity.value)
                 }
             }
         }
@@ -507,12 +507,12 @@ class CartActivity : AppCompatActivity() {
             viewModel.readCart(token)
             viewModel.readCartResponse.observe(this){
                 showCart(it.data)
-                binding.cartTotalValue.text = calculateTotal(it.data)
+                binding.cartTvTotalvalue.text = calculateTotal(it.data)
             }
         }
 
         viewModel.getTokenKey().observe(this){ token ->
-            binding.cartButtonCheckout.setOnClickListener{
+            binding.cartButtonTocheckout.setOnClickListener{
                 viewModel.checkoutCart(token)
                 viewModel.checkoutCartResponse.observe(this){ response ->
                     if(response.status == true){
@@ -527,10 +527,10 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun showCart(list: List<ReadCartResponseItem?>?) {
-        binding.rvCart.layoutManager = LinearLayoutManager(this)
+        binding.cartRvCarts.layoutManager = LinearLayoutManager(this)
 
         val cartAdapter = CartAdapter(list)
-        binding.rvCart.adapter = cartAdapter
+        binding.cartRvCarts.adapter = cartAdapter
 
 //        cartAdapter.setOnItemClickCallback(object : CartAdapter.OnItemClickCallback {
 //            override fun onItemClicked(data: ReadCartResponseItem?) {

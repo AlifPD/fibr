@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
         android:padding="8dp"
         android:paddingStart="8dp"
@@ -23,7 +23,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 tools:srcCompat="@tools:sample/avatars"
-                android:id="@+id/imageView_thumbnail_merchant"
+                android:id="@+id/merchantitem_imv_thumbnail"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="8dp"
@@ -37,13 +37,11 @@
                 android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/merchant_name"
-                app:layout_constraintTop_toBottomOf="@+id/imageView_thumbnail_merchant"
-                app:layout_constraintStart_toStartOf="@+id/imageView_thumbnail_merchant"
-                app:layout_constraintEnd_toEndOf="@+id/imageView_thumbnail_merchant"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:id="@+id/merchantitem_tv_name"
+                app:layout_constraintTop_toBottomOf="@+id/merchantitem_imv_thumbnail"
+                app:layout_constraintStart_toStartOf="@+id/merchantitem_imv_thumbnail"
+                app:layout_constraintEnd_toEndOf="@+id/merchantitem_imv_thumbnail"
+                android:layout_marginTop="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
