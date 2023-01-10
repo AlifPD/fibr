@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.DELETE
 
 class MainViewModel (private val pref: UserPreferences) : ViewModel(){
     private var _loginResponse = MutableLiveData<LoginResponse>()
@@ -41,6 +42,9 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
 
     private var _logoutResponse = MutableLiveData<LogoutResponse>()
     val logoutResponse: LiveData<LogoutResponse> = _logoutResponse
+
+    private var _deleteCartResponse = MutableLiveData<DeleteCartResponse>()
+    val deleteCartResponse: LiveData<DeleteCartResponse> = _deleteCartResponse
 
     fun getTokenKey(): LiveData<String> {
         return pref.getTokenKey().asLiveData()
@@ -285,6 +289,28 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
             }
 
             override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
+                Log.e("MainViewModel", "onFailure: ${t.message}")
+            }
+
+        })
+    }
+
+    fun deleteCart(id_user: String){
+        val clientUser = ApiConfig().getApiService().deleteCart(id_user)
+        clientUser.enqueue(object: Callback<DeleteCartResponse>{
+            override fun onResponse(
+                call: Call<DeleteCartResponse>,
+                response: Response<DeleteCartResponse>,
+            ) {
+                if(response.isSuccessful){
+                    _deleteCartResponse.value = response.body()
+                    Log.d("MainViewModel", "onResponseSuccess: ${response.body()?.status} ${response.code()}")
+                }else{
+                    Log.d("MainViewModel", "onResponseFailure: ${response.body()?.status} ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<DeleteCartResponse>, t: Throwable) {
                 Log.e("MainViewModel", "onFailure: ${t.message}")
             }
 

@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -181,6 +182,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -283,6 +285,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -385,6 +388,7 @@ class DetailMerchantActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailMerchantBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -430,6 +434,7 @@ class DetailProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -497,6 +502,7 @@ class CartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val viewModel = ViewModelProvider(
             this,
@@ -511,12 +517,13 @@ class CartActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.getTokenKey().observe(this){ token ->
-            binding.cartButtonTocheckout.setOnClickListener{
+        binding.cartButtonTocheckout.setOnClickListener{
+            viewModel.getTokenKey().observe(this){ token ->
                 viewModel.checkoutCart(token)
                 viewModel.checkoutCartResponse.observe(this){ response ->
                     if(response.status == true){
                         Toast.makeText(this, "Checkout Success", Toast.LENGTH_SHORT).show()
+                        viewModel.deleteCart(token)
                         finish()
                     }else{
                         Toast.makeText(this, "Checkout Failed", Toast.LENGTH_SHORT).show()

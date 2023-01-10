@@ -284,3 +284,9 @@ data class LogoutResponse(
     @field:SerializedName("status")
     val status: Boolean? = null
 )
+
+// Delete Cart
+data class DeleteCartResponse(
+    @field:SerializedName("status")
+    val status: Boolean? = null
+)

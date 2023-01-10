@@ -96,4 +96,9 @@ interface ApiService {
     fun logout(
         @Path("id_user") id_user: String
     ): Call<LogoutResponse>
+
+    @DELETE("api/delete-cart/{id_user}")
+    fun deleteCart(
+        @Path("id_user") id_user: String
+    ): Call<DeleteCartResponse>
 }
