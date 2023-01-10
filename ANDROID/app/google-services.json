@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "101743167703",
+    "project_id": "fibr-3ac5b",
+    "storage_bucket": "fibr-3ac5b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101743167703:android:2897c71906e9ede7090892",
+        "android_client_info": {
+          "package_name": "cc10.fibr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101743167703-44qam4qsd3i9tvcnc7arl1b9a8lg7cv8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBweXtRqkeq0JgAZl_O5BFoHzFPBe3M6qQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101743167703-44qam4qsd3i9tvcnc7arl1b9a8lg7cv8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

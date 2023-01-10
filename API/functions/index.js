@@ -8,11 +8,16 @@ admin.initializeApp({
 
 const express = require("express");
 const cors = require("cors");
+const { region } = require("firebase-functions");
 const app = express();
 const db = admin.firestore();
 
 app.use(cors({origin:true}));
 app.use(express.json());
+
+const responseTemplate = {
+    status: false
+}
 
 // Test API
 app.get('/api-test', (req, res) => {
@@ -21,195 +26,192 @@ app.get('/api-test', (req, res) => {
 
 // Sign Up, Login, Logout Route --------------------------------------------------------------
 // Sign Up as User
-app.post('/api/signup', (req,res) => {
+app.post('/api/signup/:id_user/:name/:password/:address/:thumbnail', (req,res) => {
     (async() => {
         try{
-            const document = db.collection('Users').doc('/' + req.body.id_user + '/');
-            let product = await document.get();
-            let response = product.data();
-
-            if(response != undefined){
-                throw console.error();
-            }else{
-                await db.collection('Users').doc('/' + req.body.id_user + '/')
+            await db.collection('Users').doc('/' + req.params.id_user + '/')
                 .create({
-                    name: req.body.name,
-                    password: req.body.password,
-                    address: req.body.address,
-                    credit: 0,
+                    name: req.params.name,
+                    password: req.params.password,
+                    address: req.params.address,
+                    credit: 1000000,
                     isLoggedIn: false,
                     transaction: 0,
-                    thumbnail: req.body.thumbnail
+                    thumbnail: req.params.thumbnail
                 })
-            }
-
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
     
 // Login as User
-app.get('/api/login', (req, res) => {
+app.get('/api/login/:id_user/:password', (req, res) => {
     (async() => {
         try{
-            const document = db.collection('Users').doc('/' + req.body.id_user + '/');
-            let product = await document.get();
-            let response = product.data();
+            const document = db.collection('Users').doc('/' + req.params.id_user + '/');
+            let response = await document.get();
+            let data = response.data();
 
-            if((response == undefined) || (response.password != req.body.password)){
+            if((data == undefined) || (data.password != req.params.password)){
                 throw console.error();
             }
-
-            document.update({
+            await document.update({
                 isLoggedIn: true
             });
-            return res.status(200).send();
+
+            let responseReturn = await document.get();
+            let dataReturn = responseReturn.data();
+            
+
+            return res.status(200).send({status: true , "data": dataReturn});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Logout User
-app.put('/api/logout', (req, res) => {
+app.put('/api/logout/:id_user', (req, res) => {
     (async() => {
         try{
-            const document = db.collection('Users').doc('/' + req.body.id_user + '/');
+            const document = db.collection('Users').doc('/' + req.params.id_user + '/');
 
             await document.update({
                 isLoggedIn: false
             });
             
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Sign Up as Merchant
-app.post('/api/signup-merchant', (req,res) => {
+app.post('/api/signup-merchant/:id_merchant/:name/:password/:thumbnail', (req,res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants').doc('/' + req.body.id_merchant + '/');
-            let product = await document.get();
-            let response = product.data();
+            const document = db.collection('Merchants').doc('/' + req.params.id_merchant + '/');
+            let response = await document.get();
+            let data = response.data();
 
-            if(response != undefined){
+            if(data != undefined){
                 throw console.error();
             }else{
-                await db.collection('Merchants').doc('/' + req.body.id_merchant + '/')
-            .create({
-                name: req.body.name,
-                password: req.body.password,
-                credit: 0,
-                isLoggedIn: false,
-                thumbnail: req.body.thumbnail
-            })
+                await db.collection('Merchants').doc('/' + req.params.id_merchant + '/')
+                .create({
+                    name: req.params.name,
+                    password: req.params.password,
+                    credit: 0,
+                    isLoggedIn: false,
+                    thumbnail: req.params.thumbnail
+                })
             }
-
-            return res.status(200).send();
+            
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
     
 // Login as Merchant
-app.get('/api/login-merchant', (req, res) => {
+app.get('/api/login-merchant/:id_merchant/:password', (req, res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants').doc('/' + req.body.id_merchant + '/');
-            let product = await document.get();
-            let response = product.data();
+            const document = db.collection('Merchants').doc('/' + req.params.id_merchant + '/');
+            let response = await document.get();
+            let data = response.data();
 
-            if((response == undefined) || (response.password != req.body.password)){
+            if((data == undefined) || (data.password != req.params.password)){
                 throw console.error();
             }
-
-            document.update({
+            await document.update({
                 isLoggedIn: true
             });
-            return res.status(200).send();
+
+            let responseReturn = await document.get();
+            let dataReturn = responseReturn.data();
+            return res.status(200).send({status: true, "data": dataReturn});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Logout Merchant
-app.put('/api/logout-merchant', (req, res) => {
+app.put('/api/logout-merchant/:id_merchant', (req, res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants').doc('/' + req.body.id_merchant + '/');
+            const document = db.collection('Merchants').doc('/' + req.params.id_merchant + '/');
 
             await document.update({
                 isLoggedIn: false
             });
             
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Merchants/Product ---------------------------------------------------------------------
 // Create/Add product
-app.post('/api/create', (req,res) => {
+app.post('/api/create/:id_merchant/:id_product/:name/:price/:unit/:quantity/:thumbnail/:description', (req,res) => {
     (async() => {
         try{
-            await db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/')
+            await db.collection('Merchants/' + req.params.id_merchant + '/Products').doc('/' + req.params.id_product + '/')
             .create({
-                name: req.body.name,
-                price: req.body.price,
-                unit: req.body.unit,
-                quantity: req.body.quantity,
-                thumbnail: req.body.thumbnail,
-                description: req.body.description
+                name: req.params.name,
+                price: Number(req.params.price),
+                unit: req.params.unit,
+                quantity: Number(req.params.quantity),
+                thumbnail: req.params.thumbnail,
+                description: req.params.description
             })
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Read/Retreive specific product
-app.get('/api/read', (req, res) => {
+app.get('/api/read/:id_merchant/:id_product', (req, res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/');
-            let product = await document.get();
-            let response = product.data();
+            const document = db.collection('Merchants/' + req.params.id_merchant + '/Products').doc('/' + req.params.id_product + '/');
+            let response = await document.get();
+            let data = response.data();
 
-            if(response == undefined){
+            if(data == undefined){
                 throw console.error();
             }
-
-            return res.status(200).send(response);
+            
+            return res.status(200).send({status: true, data});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status : false, error});
         }
     })();
 });
 
 // Read/Retreive all product from 1 merchant
-app.get('/api/read-all', (req, res) => {
+app.get('/api/read-all/:id_merchant', (req, res) => {
     (async() => {
         try{
-            let query = db.collection('Merchants/' + req.body.id_merchant + '/Products');
-            let response = [];
+            let query = db.collection('Merchants/' + req.params.id_merchant + '/Products');
+            let data = [];
             
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
@@ -223,52 +225,80 @@ app.get('/api/read-all', (req, res) => {
                         thumbnail: doc.data().thumbnail,
                         description: doc.data().description
                     };
-                    response.push(selectedItem);
+                    data.push(selectedItem);
                 }
             })
-            return res.status(200).send(response);
+            return res.status(200).send({status: true, data});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
+        }
+    })();
+});
+
+// Read/Retreive all Merchant
+app.get('/api/read-all-merchant', (req, res) => {
+    (async() => {
+        try{
+            let query = db.collection('Merchants/');
+            let data = [];
+            
+            await query.get().then(querySnapshot => {
+                let docs = querySnapshot.docs;
+                for(let doc of docs){
+                    const selectedItem = {
+                        id: doc.id,
+                        name: doc.data().name,
+                        credit: doc.data().credit,
+                        isLoggedIn: doc.data().isLoggedIn,
+                        thumbnail: doc.data().thumbnail,
+                    };
+                    data.push(selectedItem);
+                }
+            })
+            return res.status(200).send({status: true, data});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Update a product
-app.put('/api/update', (req,res) => {
+app.put('/api/update/:id_merchant/:id_product/:name/:price/:unit/:quantity/:thumbnail/:description', (req,res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/');
+            const document = db.collection('Merchants/' + req.params.id_merchant + '/Products').doc('/' + req.params.id_product + '/');
 
             await document.update({
-                name: req.body.name,
-                price: req.body.price,
-                unit: req.body.unit,
-                quantity: req.body.quantity,
-                thumbnail: req.body.thumbnail,
-                description: req.body.description
+                name: req.params.name,
+                price: Number(req.params.price),
+                unit: req.params.unit,
+                quantity: Number(req.params.quantity),
+                thumbnail: req.params.thumbnail,
+                description: req.params.description
             });
             
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Delete a product
-app.delete('/api/delete', (req,res) => {
+app.delete('/api/delete/:id_merchant/:id_product', (req,res) => {
     (async() => {
         try{
-            const document = db.collection('Merchants/' + req.body.id_merchant + '/Products').doc('/' + req.body.id_product + '/');
+            const document = db.collection('Merchants/' + req.params.id_merchant + '/Products').doc('/' + req.params.id_product + '/');
 
             await document.delete();
             
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
@@ -276,58 +306,68 @@ app.delete('/api/delete', (req,res) => {
 
 // Users -------------------------------------------------------------------------------
 // Add to Cart
-app.post('/api/add-cart', (req,res) => {
+app.post('/api/add-cart/:id_user/:id_item/:id_merchant/:id_product/:name/:thumbnail/:price/:unit/:quantity', (req,res) => {
     (async() => {
         try{
-            await db.collection('Users/' + req.body.id_user + '/Cart').doc('/' + req.body.id_item + '/')
+            await db.collection('Users/' + req.params.id_user + '/Cart').doc('/' + req.params.id_item + '/')
             .create({
-                id_merchant: req.body.id_merchant,
-                id_product: req.body.id_product,
-                quantity: req.body.quantity
+                id_merchant: req.params.id_merchant,
+                id_product: req.params.id_product,
+                name: req.params.name,
+                thumbnail: req.params.thumbnail,
+                price: Number(req.params.price),
+                unit: req.params.unit,
+                quantity: Number(req.params.quantity)
             })
-            return res.status(200).send();
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Get All Items within a Cart
-app.get('/api/all-cart-item', (req, res) => {
+app.get('/api/all-cart-item/:id_user', (req, res) => {
     (async() => {
         try{
-            let query = db.collection('Users/' + req.body.id_user + '/Cart');
-            let response = [];
+            let query = db.collection('Users/' + req.params.id_user + '/Cart');
+            let data = [];
 
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for(let doc of docs){
                     const selectedItem = {
                         id_item: doc.id,
-                        id_merchant: doc.id_merchant,
-                        id_product: doc.id_product,
-                        quantity: doc.quantity
+                        id_merchant: doc.data().id_merchant,
+                        id_product: doc.data().id_product,
+                        name: doc.data().name,
+                        thumbnail: doc.data().thumbnail,
+                        price: doc.data().price,
+                        unit: doc.data().unit,
+                        quantity: doc.data().quantity
                     };
-                    response.push(selectedItem);
+                    data.push(selectedItem);
                 }
             })
-            return res.status(200).send(response);
+            let data_length = data.length
+
+            return res.status(200).send({status: true, data_length, data});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: false, error});
         }
     })();
 });
 
 // Checkout Cart
-app.get('/api/checkout', (req, res) => {
+app.post('/api/checkout/:id_user', (req, res) => {
     (async() => {
         try{
-            let query = db.collection('Users/' + req.body.id_user + '/Cart');
+            let query = db.collection('Users/' + req.params.id_user + '/Cart');
             let response = [];
 
-            const documentUser = db.collection('Users/').doc(req.body.id_user + '/');
+            const documentUser = db.collection('Users/').doc(req.params.id_user + '/');
             let user = await documentUser.get();
             let responseUser = user.data();
             
@@ -342,6 +382,10 @@ app.get('/api/checkout', (req, res) => {
                         id: doc.id,
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
+                        name: doc.data().name,
+                        thumbnail: doc.data().thumbnail,
+                        price: doc.data().price,
+                        unit: doc.data().unit,
                         quantity: doc.data().quantity
                     };
                     response.push(selectedItem);
@@ -353,75 +397,46 @@ app.get('/api/checkout', (req, res) => {
                     const documentProduct = db.collection('Merchants/' + doc.data().id_merchant + '/Products').doc('/' + doc.data().id_product + '/');
                     let product = await documentProduct.get();
                     let responseProduct = product.data();
+                    
                     await documentProduct.update({
                         quantity: responseProduct.quantity - doc.data().quantity
                     });
                     totalPrice = totalPrice + (responseProduct.price * doc.data().quantity);
+
                     totalPriceMerchant = totalPriceMerchant + (responseProduct.price * doc.data().quantity);
                     await documentMerchant.update({
                         credit: responseMerchant.credit + totalPriceMerchant
                     });
                     totalPriceMerchant = 0;
 
-                    
-                    await db.collection('Users/' + req.body.id_user + '/Transaction' + numTransaction).doc('/' + doc.id + '/')
+                    await db.collection('Users/' + req.params.id_user + '/Transaction' + numTransaction).doc('/' + doc.id + '/')
                     .create({
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
-                        quantity: doc.data().quantity
-                    })
+                        quantity: Number(doc.data().quantity)
+                    });
                 }
-            })
+            });
+
             await documentUser.update({
                 credit: responseUser.credit - totalPrice,
                 transaction: responseUser.transaction + 1,
             });
 
-            return res.status(200).send(response);
+            return res.status(200).send({status: true});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// Delete Cart
-app.delete('/api/delete-cart', (req,res) => {
-    (async() => {
-        try{
-            let query = db.collection('Users/' + req.body.id_user + '/Cart');
-            
-            await query.get().then(async querySnapshot => {
-                let docs = querySnapshot.docs;
-                for(let doc of docs){
-                    const selectedItem = {
-                        id: doc.id,
-                        name: doc.data().name,
-                        price: doc.data().price,
-                        unit: doc.data().unit,
-                        quantity: doc.data().quantity,
-                        thumbnail: doc.data().thumbnail,
-                        description: doc.data().description
-                    };
-                    const document = db.collection('Users/' + req.body.id_user + '/Cart').doc('/' + doc.id + '/');       
-                    await document.delete();
-                }
-            })
-            
-            return res.status(200).send();
-        }catch(error){
-            console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: true, error});
         }
     })();
 });
 
 // Get All Transaction Items
-app.get('/api/transaction', (req, res) => {
+app.get('/api/transaction/:id_user/:id_transaction', (req, res) => {
     (async() => {
         try{
-            let query = db.collection('Users/' + req.body.id_user + '/Transaction' + req.body.id_transaction);
-            let response = [];
+            let query = db.collection('Users/' + req.params.id_user + '/Transaction' + req.params.id_transaction);
+            let data = [];
             
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
@@ -430,17 +445,82 @@ app.get('/api/transaction', (req, res) => {
                         id: doc.id,
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
+                        name: doc.data().name,
+                        thumbnail: doc.data().thumbnail,
+                        price: doc.data().price,
+                        unit: doc.data().unit,
                         quantity: doc.data().quantity
                     };
-                    response.push(selectedItem);
+                    data.push(selectedItem);
                 }
             })
-            return res.status(200).send(response);
+            return res.status(200).send({status: true, data});
         }catch(error){
             console.log(error);
-            return res.status(500).send(error);
+            return res.status(500).send({status: true, error});
         }
     })();
 });
 
-exports.app = functions.https.onRequest(app);
+// Delete Cart
+app.delete('/api/delete-cart/:id_user', (req,res) => {
+    (async() => {
+        try{
+            let query = db.collection('Users/' + req.params.id_user + '/Cart');
+            
+            await query.get().then(async querySnapshot => {
+                let docs = querySnapshot.docs;
+                for(let doc of docs){
+                    await db.collection('Users/' + req.params.id_user + '/Cart').doc('/' + doc.id + '/').delete();
+                }
+            })
+            
+            return res.status(200).send({status: true});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({status: false, error});
+        }
+    })();
+});
+
+// Read User
+app.get('/api/user/:id_user', async (req, res) => {
+    (async() => {
+        try{
+            const document = db.doc('Users/' + req.params.id_user);
+            let response = await document.get();
+            let data = response.data();
+
+            if(data == undefined){
+                throw console.error();
+            }
+            
+            return res.status(200).send({status: true, data});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({status : false, error});
+        }
+    })();
+});
+
+// Read Merchant
+app.get('/api/merchant/:id_mechant', async (req, res) => {
+    (async() => {
+        try{
+            const document = db.doc('Merchants/' + req.params.id_mechant);
+            let response = await document.get();
+            let data = response.data();
+
+            if(data == undefined){
+                throw console.error();
+            }
+            
+            return res.status(200).send({status: true, data});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({status : false, error});
+        }
+    })();
+});
+
+exports.app = functions.region('asia-southeast2').https.onRequest(app);

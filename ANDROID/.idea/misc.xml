@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.215" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/drawable-v24/shopping_cart_checkout-48px.xml" value="0.3215" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/drawable/ic_baseline_store_24.xml" value="0.215" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/drawable/shopping_cart_checkout-48px (1).xml" value="0.215" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/drawable/shopping_cart_checkout-48px.xml" value="0.287" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_cart.xml" value="0.3129528985507246" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_detail_merchant.xml" value="0.296195652173913" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_detail_product.xml" value="0.1" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_login_merchant.xml" value="0.296195652173913" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_sign_up.xml" value="0.3145833333333333" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/activity_sign_up_merchant.xml" value="0.296195652173913" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/item_cart.xml" value="0.28125" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/item_merchants.xml" value="0.5" />
+        <entry key="..\:/Kampus/Semester 7/Cloud Computing/Tugas Besar/fibr/ANDROID/app/src/main/res/layout/item_products.xml" value="0.35104166666666664" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
