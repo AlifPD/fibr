@@ -13,9 +13,6 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
     private var _loginResponse = MutableLiveData<LoginResponse>()
     val loginResponse: LiveData<LoginResponse> = _loginResponse
 
-    private var _loginMerchantResponse = MutableLiveData<LoginMerchantResponse>()
-    val loginMerchantResponse: LiveData<LoginMerchantResponse> = _loginMerchantResponse
-
     private var _allMerchantResponse = MutableLiveData<AllMerchantResponse>()
     val allMerchantResponse : MutableLiveData<AllMerchantResponse> = _allMerchantResponse
 
@@ -45,6 +42,12 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
 
     private var _deleteCartResponse = MutableLiveData<DeleteCartResponse>()
     val deleteCartResponse: LiveData<DeleteCartResponse> = _deleteCartResponse
+
+    private var _readTransactionResponse = MutableLiveData<ReadTransactionResponse>()
+    val readTransactionResponse: LiveData<ReadTransactionResponse> = _readTransactionResponse
+
+    private var _readAllTransactionResponse = MutableLiveData<ReadAllTransactionResponse>()
+    val readAllTransactionResponse: LiveData<ReadAllTransactionResponse> = _readAllTransactionResponse
 
     fun getTokenKey(): LiveData<String> {
         return pref.getTokenKey().asLiveData()
@@ -88,24 +91,6 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("MainViewModel", "onFailure: ${t.message}")
-            }
-
-        })
-    }
-    fun loginMerchant(id_merchant: String, password: String){
-        val clientLogin = ApiConfig().getApiService().loginMerchant(id_merchant, password)
-        clientLogin.enqueue(object: Callback<LoginMerchantResponse>{
-            override fun onResponse(call: Call<LoginMerchantResponse>, response: Response<LoginMerchantResponse>) {
-                if(response.isSuccessful){
-                    _loginMerchantResponse.value = response.body()
-                    Log.d("MainViewModel", "onResponseSuccess: ${response.body()?.status} ${response.code()}")
-                }else{
-                    Log.d("MainViewModel", "onResponseFailure: ${response.body()?.status} ${response.code()}")
-                }
-            }
-
-            override fun onFailure(call: Call<LoginMerchantResponse>, t: Throwable) {
                 Log.e("MainViewModel", "onFailure: ${t.message}")
             }
 
@@ -314,6 +299,48 @@ class MainViewModel (private val pref: UserPreferences) : ViewModel(){
                 Log.e("MainViewModel", "onFailure: ${t.message}")
             }
 
+        })
+    }
+
+    fun readTransaction(id_user: String, id_transaction: String){
+        val clientUser = ApiConfig().getApiService().readTransaction(id_user, id_transaction)
+        clientUser.enqueue(object: Callback<ReadTransactionResponse>{
+            override fun onResponse(
+                call: Call<ReadTransactionResponse>,
+                response: Response<ReadTransactionResponse>,
+            ) {
+                if(response.isSuccessful){
+                    _readTransactionResponse.value = response.body()
+                    Log.d("MainViewModel", "onResponseSuccess: ${response.body()?.status} ${response.code()}")
+                }else{
+                    Log.d("MainViewModel", "onResponseFailure: ${response.body()?.status} ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ReadTransactionResponse>, t: Throwable) {
+                Log.e("MainViewModel", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun readAllTransaction(id_user: String){
+        val clientUser = ApiConfig().getApiService().readAllTransaction(id_user)
+        clientUser.enqueue(object: Callback<ReadAllTransactionResponse>{
+            override fun onResponse(
+                call: Call<ReadAllTransactionResponse>,
+                response: Response<ReadAllTransactionResponse>,
+            ) {
+                if(response.isSuccessful){
+                    _readAllTransactionResponse.value = response.body()
+                    Log.d("MainViewModel", "onResponseSuccess: ${response.body()?.status} ${response.code()}")
+                }else{
+                    Log.d("MainViewModel", "onResponseFailure: ${response.body()?.status} ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ReadAllTransactionResponse>, t: Throwable) {
+                Log.e("MainViewModel", "onFailure: ${t.message}")
+            }
         })
     }
 }

@@ -19,13 +19,13 @@
             android:theme="@style/Theme.Fibr"
             tools:targetApi="31">
         <activity
+                android:name=".view.DetailTransactionActivity"
+                android:exported="false" />
+        <activity
+                android:name=".view.AccountInfoActivity"
+                android:exported="false" />
+        <activity
                 android:name=".view.CartActivity"
-                android:exported="false" />
-        <activity
-                android:name=".view.SignUpMerchantActivity"
-                android:exported="false" />
-        <activity
-                android:name=".view.LoginMerchantActivity"
                 android:exported="false" />
         <activity
                 android:name=".view.DetailMerchantActivity"

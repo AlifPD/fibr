@@ -18,13 +18,16 @@
             android:layout_marginStart="16dp" />
 
     <TextView
-            android:text="Please Input Your Data"
+            android:text="Welcome to Fibr.\nPlease input your data to login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/login_tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline5" />
+            app:layout_constraintTop_toTopOf="@+id/guideline5"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="20sp" />
 
     <TextView
             android:text="ID"
@@ -35,19 +38,22 @@
             app:layout_constraintTop_toBottomOf="@+id/login_tv_title"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2" />
+            app:layout_constraintHorizontal_bias="0.2"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/login_tv_iddesc"
             app:layout_constraintTop_toBottomOf="@+id/login_tv_iddesc"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/login_inlayout_id"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:startIconDrawable="@drawable/ic_baseline_person_24"
-            android:layout_marginEnd="64dp">
+            android:layout_marginEnd="64dp"
+            android:layout_marginTop="4dp"
+            app:startIconDrawable="@drawable/ic_baseline_person_outline_24">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -63,7 +69,10 @@
             android:id="@+id/login_tv_passworddesc"
             app:layout_constraintTop_toBottomOf="@+id/login_inlayout_id"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="@+id/login_inlayout_id" />
+            app:layout_constraintStart_toStartOf="@+id/login_inlayout_id"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="textStart" />
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
@@ -71,11 +80,11 @@
             app:layout_constraintTop_toBottomOf="@+id/login_tv_passworddesc"
             app:layout_constraintStart_toStartOf="@+id/login_tv_passworddesc"
             app:layout_constraintEnd_toEndOf="@+id/login_inlayout_id"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:id="@+id/login_inlayout_password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:startIconDrawable="@drawable/ic_baseline_lock_24"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -94,7 +103,8 @@
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@+id/login_inlayout_password"
             app:layout_constraintEnd_toEndOf="@+id/login_inlayout_password"
-            app:layout_constraintStart_toStartOf="@+id/login_inlayout_password" />
+            app:layout_constraintStart_toStartOf="@+id/login_inlayout_password"
+            android:backgroundTint="#80CC28" />
 
     <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"

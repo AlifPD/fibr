@@ -38,34 +38,6 @@ data class LoginResponseItem(
     val transaction: Int? = null
 )
 
-// Login Merchant
-data class LoginMerchantResponse(
-
-    @field:SerializedName("data")
-    val data: LoginMerchantResponseItem? = null,
-
-    @field:SerializedName("status")
-    val status: Boolean? = null
-)
-@Parcelize
-data class LoginMerchantResponseItem(
-
-    @field:SerializedName("thumbnail")
-    val thumbnail: String? = null,
-
-    @field:SerializedName("password")
-    val password: String? = null,
-
-    @field:SerializedName("name")
-    val name: String? = null,
-
-    @field:SerializedName("isLoggedIn")
-    val isLoggedIn: Boolean? = null,
-
-    @field:SerializedName("credit")
-    val credit: Int? = null
-): Parcelable
-
 // Sign Up User
 data class SignUpResponse(
     @field:SerializedName("status")
@@ -290,3 +262,62 @@ data class DeleteCartResponse(
     @field:SerializedName("status")
     val status: Boolean? = null
 )
+
+// Read Transaction
+data class ReadTransactionResponse(
+
+    @field:SerializedName("data")
+    val data: List<ReadTransactionResponseItem?>? = null,
+
+    @field:SerializedName("status")
+    val status: Boolean? = null
+)
+@Parcelize
+data class ReadTransactionResponseItem(
+
+    @field:SerializedName("thumbnail")
+    val thumbnail: String? = null,
+
+    @field:SerializedName("unit")
+    val unit: String? = null,
+
+    @field:SerializedName("id_product")
+    val idProduct: String? = null,
+
+    @field:SerializedName("quantity")
+    val quantity: Int? = null,
+
+    @field:SerializedName("price")
+    val price: Int? = null,
+
+    @field:SerializedName("id_item")
+    val idItem: String? = null,
+
+    @field:SerializedName("id_merchant")
+    val idMerchant: String? = null,
+
+    @field:SerializedName("name")
+    val name: String? = null,
+
+    @field:SerializedName("id_transaction")
+    val idTransaction: String? = null
+): Parcelable
+
+// Read All Transaction
+data class ReadAllTransactionResponse(
+
+    @field:SerializedName("data")
+    val data: List<ReadAllTransactionResponseItem?>? = null,
+
+    @field:SerializedName("status")
+    val status: Boolean? = null
+)
+@Parcelize
+data class ReadAllTransactionResponseItem(
+
+    @field:SerializedName("total")
+    val total: Int? = null,
+
+    @field:SerializedName("id_transaction")
+    val idTransaction: String? = null
+) : Parcelable

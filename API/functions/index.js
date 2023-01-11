@@ -15,9 +15,6 @@ const db = admin.firestore();
 app.use(cors({origin:true}));
 app.use(express.json());
 
-const responseTemplate = {
-    status: false
-}
 
 // Test API
 app.get('/api-test', (req, res) => {
@@ -379,7 +376,7 @@ app.post('/api/checkout/:id_user', (req, res) => {
                 let docs = querySnapshot.docs;
                 for(let doc of docs){
                     const selectedItem = {
-                        id: doc.id,
+                        id_item: doc.id,
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
                         name: doc.data().name,
@@ -409,10 +406,15 @@ app.post('/api/checkout/:id_user', (req, res) => {
                     });
                     totalPriceMerchant = 0;
 
-                    await db.collection('Users/' + req.params.id_user + '/Transaction' + numTransaction).doc('/' + doc.id + '/')
+                    await db.collection('Users/' + req.params.id_user + '/Transaction #' + numTransaction).doc('/' + doc.id + '/')
                     .create({
+                        id_transaction: numTransaction,
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
+                        name: doc.data().name,
+                        thumbnail: doc.data().thumbnail,
+                        price: Number(doc.data().price),
+                        unit: doc.data().unit,
                         quantity: Number(doc.data().quantity)
                     });
                 }
@@ -435,14 +437,15 @@ app.post('/api/checkout/:id_user', (req, res) => {
 app.get('/api/transaction/:id_user/:id_transaction', (req, res) => {
     (async() => {
         try{
-            let query = db.collection('Users/' + req.params.id_user + '/Transaction' + req.params.id_transaction);
+            let query = db.collection('Users/' + req.params.id_user + '/Transaction #' + req.params.id_transaction);
             let data = [];
             
             await query.get().then(querySnapshot => {
                 let docs = querySnapshot.docs;
                 for(let doc of docs){
                     const selectedItem = {
-                        id: doc.id,
+                        id_transaction: req.params.id_transaction,
+                        id_item: doc.id,
                         id_merchant: doc.data().id_merchant,
                         id_product: doc.data().id_product,
                         name: doc.data().name,
@@ -454,6 +457,45 @@ app.get('/api/transaction/:id_user/:id_transaction', (req, res) => {
                     data.push(selectedItem);
                 }
             })
+            return res.status(200).send({status: true, data});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({status: true, error});
+        }
+    })();
+});
+
+// Get All Transaction
+app.get('/api/all-transaction/:id_user', (req, res) => {
+    (async() => {
+        try{
+            const document = db.doc('Users/' + req.params.id_user);
+            let response = await document.get();
+            let dataResponse = response.data();
+            if(dataResponse == undefined){
+                throw console.error();
+            }
+
+            let data = [];
+            let temp = 0;
+            for(let i of [...Array(dataResponse.transaction).keys()]){
+                let query = db.collection('Users/' + req.params.id_user + '/Transaction #' + (i+1));
+
+                await query.get().then(querySnapshot => {
+                    let docs = querySnapshot.docs;
+                    for(let doc of docs){
+                        temp += (doc.data().price * doc.data().quantity);
+                    }
+                    
+                    const selectedItem = {
+                        id_transaction: String(i+1),
+                        total: temp
+                    };
+                    data.push(selectedItem);
+                });
+
+                temp = 0;
+            }
             return res.status(200).send({status: true, data});
         }catch(error){
             console.log(error);

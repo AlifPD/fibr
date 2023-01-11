@@ -20,19 +20,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import cc10.fibr.R
 import cc10.fibr.databinding.*
-import cc10.fibr.helper.uriToFile
 import cc10.fibr.local.MainViewModel
 import cc10.fibr.local.SignUpViewModel
 import cc10.fibr.local.UserPreferences
 import cc10.fibr.local.ViewModelFactory
-import cc10.fibr.network.AllMerchantResponseItem
-import cc10.fibr.network.AllProductResponseItem
-import cc10.fibr.network.LoginResponse
-import cc10.fibr.network.ReadCartResponseItem
+import cc10.fibr.network.*
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
-import java.io.File
-import java.lang.Exception
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
@@ -93,68 +87,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-}
-
-class LoginMerchantActivity : AppCompatActivity() {
-//    private lateinit var binding: ActivityLoginMerchantBinding
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityLoginMerchantBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        val viewModel = ViewModelProvider(
-//            this,
-//            ViewModelFactory(UserPreferences.getInstance(dataStore))
-//        )[MainViewModel::class.java]
-//
-//        binding.loginMerchantButton.setOnClickListener {
-//            val inputId = binding.loginMerchantIdEdittext.text.toString()
-//            val inputPassword = binding.loginMerchantPasswordEdittext.text.toString()
-//
-//            viewModel.loginMerchant(inputId, inputPassword)
-//            viewModel.loginMerchantResponse.observe(this){
-//                if(it.status == true){
-//                    Toast.makeText(
-//                        this,
-//                        "Login Success",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//
-//                    viewModel.saveTokenKey(true)
-//                    viewModel.saveAccTypeKey(true)
-//
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    intent.flags =
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                    intent.putExtra("LOGINCHECK", true)
-//                    startActivity(intent)
-//                    finish()
-//                }else{
-//                    Toast.makeText(
-//                        this,
-//                        "Please Try Again",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    binding.loginMerchantIdEdittext.text?.clear()
-//                    binding.loginMerchantPasswordEdittext.text?.clear()
-//                }
-//            }
-//        }
-//
-//        binding.switchUser.setOnClickListener {
-//            val intent = Intent(this, LoginActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//            startActivity(intent)
-//            finish()
-//        }
-//
-//        binding.switchSignupMerchant.setOnClickListener {
-//            val intent = Intent(this, SignUpMerchantActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//            startActivity(intent)
-//            finish()
-//        }
-//    }
 }
 
 class SignUpActivity : AppCompatActivity() {
@@ -272,13 +204,6 @@ class SignUpActivity : AppCompatActivity() {
     }
 }
 
-class SignUpMerchantActivity : AppCompatActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_sign_up_merchant)
-//    }
-}
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -341,11 +266,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.mainButtonTocart.setOnClickListener {
-            val toCartIntent = Intent(this, CartActivity::class.java)
-            startActivity(toCartIntent)
-        }
-
         binding.mainButtonTologout.setOnClickListener {
             viewModel.getTokenKey().observe(this){ token ->
                 viewModel.logout(token)
@@ -361,6 +281,16 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        binding.mainButtonTocart.setOnClickListener {
+            val toCartIntent = Intent(this, CartActivity::class.java)
+            startActivity(toCartIntent)
+        }
+
+        binding.mainButtonToaccinfo.setOnClickListener {
+            val toAccInfoIntent = Intent(this, AccountInfoActivity::class.java)
+            startActivity(toAccInfoIntent)
         }
     }
 
@@ -549,6 +479,89 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun calculateTotal(list: List<ReadCartResponseItem?>?): String{
+        var cartTotal = 0
+        var temp = 0
+
+        if (list != null) {
+            for(i in list){
+                temp = i?.quantity?.let { i.price?.times(it) } ?: 0
+                cartTotal += temp
+            }
+        }
+
+        return cartTotal.toString()
+    }
+}
+
+class AccountInfoActivity : AppCompatActivity() {
+    private lateinit var  binding: ActivityAccountInfoBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAccountInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(UserPreferences.getInstance(dataStore))
+        )[MainViewModel::class.java]
+
+        viewModel.getTokenKey().observe(this){ token ->
+            viewModel.readAllTransaction(token)
+            viewModel.readAllTransactionResponse.observe(this){
+                showTransactions(it.data)
+            }
+        }
+    }
+
+    private fun showTransactions(list: List<ReadAllTransactionResponseItem?>?) {
+        binding.accinfoRvTransactions.layoutManager = LinearLayoutManager(this)
+
+        val transactionAdapter = TransactionAdapter(list)
+        binding.accinfoRvTransactions.adapter = transactionAdapter
+
+        transactionAdapter.setOnItemClickCallback(object : TransactionAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ReadAllTransactionResponseItem?) {
+                val toDetaiTransactionIntent = Intent(this@AccountInfoActivity, DetailTransactionActivity::class.java)
+                toDetaiTransactionIntent.putExtra("DATA", data)
+                startActivity(toDetaiTransactionIntent)
+            }
+        })
+    }
+}
+
+class DetailTransactionActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDetailTransactionBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityDetailTransactionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(UserPreferences.getInstance(dataStore))
+        )[MainViewModel::class.java]
+
+        val dataIntent = intent.getParcelableExtra<ReadAllTransactionResponseItem>("DATA")
+
+        viewModel.getTokenKey().observe(this){ token ->
+            viewModel.readTransaction(token, dataIntent?.idTransaction.toString())
+            viewModel.readTransactionResponse.observe(this){ response ->
+                showTransactionsItems(response.data)
+                binding.detailtransactionTvTotalvalue.text = calculateTotal(response.data)
+                binding.detailtransactionTvTitle.text = "Transaction #" + (dataIntent?.idTransaction
+                    ?: "")
+            }
+        }
+    }
+
+    private fun showTransactionsItems(list: List<ReadTransactionResponseItem?>?) {
+        binding.detailtransactionRvTransactionitems.layoutManager = LinearLayoutManager(this)
+
+        val transactionItemsAdapter = TransactionDetailAdapter(list)
+        binding.detailtransactionRvTransactionitems.adapter = transactionItemsAdapter
+    }
+
+    private fun calculateTotal(list: List<ReadTransactionResponseItem?>?): String{
         var cartTotal = 0
         var temp = 0
 

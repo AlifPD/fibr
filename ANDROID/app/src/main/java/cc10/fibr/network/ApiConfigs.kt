@@ -30,12 +30,6 @@ interface ApiService {
         @Path("password") password: String
     ): Call<LoginResponse>
 
-    @GET("api/login-merchant/{id_merchant}/{password}")
-    fun loginMerchant(
-        @Path("id_merchant") id_user: String,
-        @Path("password") password: String
-    ): Call<LoginMerchantResponse>
-
     @POST("api/signup/{id_user}/{name}/{password}/{address}/{thumbnail}")
     fun signUpUser(
         @Path("id_user") id_user: String,
@@ -101,4 +95,15 @@ interface ApiService {
     fun deleteCart(
         @Path("id_user") id_user: String
     ): Call<DeleteCartResponse>
+
+    @GET("api/transaction/{id_user}/{id_transaction}")
+    fun readTransaction(
+        @Path("id_user") id_user: String,
+        @Path("id_transaction") id_transaction: String
+    ): Call<ReadTransactionResponse>
+
+    @GET("api/all-transaction/{id_user}")
+    fun readAllTransaction(
+        @Path("id_user") id_user: String
+    ): Call<ReadAllTransactionResponse>
 }

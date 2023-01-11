@@ -24,7 +24,10 @@
             app:layout_constraintTop_toBottomOf="@+id/product_imv_thumbnail"
             app:layout_constraintStart_toStartOf="@+id/product_imv_thumbnail"
             app:layout_constraintEnd_toEndOf="@+id/product_imv_thumbnail"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     <TextView
             android:text="Price"
@@ -34,7 +37,10 @@
             app:layout_constraintTop_toBottomOf="@+id/product_tv_name"
             app:layout_constraintStart_toStartOf="@+id/product_tv_name"
             app:layout_constraintEnd_toEndOf="@+id/product_tv_name"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
 
     <TextView
             android:text="Description"
@@ -44,7 +50,9 @@
             app:layout_constraintStart_toStartOf="@+id/product_tv_price"
             app:layout_constraintEnd_toEndOf="@+id/product_tv_price"
             app:layout_constraintTop_toBottomOf="@+id/product_tv_price"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textSize="24sp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -54,7 +62,8 @@
             android:id="@+id/product_button_toadd"
             app:layout_constraintEnd_toEndOf="@+id/product_imv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/product_tv_description"
-            android:layout_marginTop="32dp" />
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#80CC28" />
 
     <NumberPicker
             android:layout_width="wrap_content"
